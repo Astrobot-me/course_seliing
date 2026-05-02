@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url       = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  name     String
+  role     Role
+  password String
+
+  courses   Course[]   @relation("InstructorCourses")
+  purchases Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  courseId    String  @id @default(uuid())
+  title       String
+  description String?
+  price       Int
+
+  instructorId String
+  instructor   User   @relation("InstructorCourses", fields: [instructorId], references: [id])
+
+  lessons   Lesson[]
+  purchases Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id      String @id @default(uuid())
+  title   String
+  content String
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime @default(now())
+}
+
+model Purchase {
+  purchaseId String @id @default(uuid())
+
+  userId   String
+  courseId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId]) // prevents duplicate purchases
+}
