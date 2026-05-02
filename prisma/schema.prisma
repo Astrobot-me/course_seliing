@@ -27,7 +27,7 @@ model User {
   role     Role
   password String
 
-  courses   Course[]   @relation("InstructorCourses")
+  courses   Course[]  @relation("InstructorCourses")
   purchases Purchase[]
 
   createdAt DateTime @default(now())

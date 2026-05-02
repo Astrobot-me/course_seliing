@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "npx tsc --build",
 		"dev": "bun run dist/app.js",
-		"tsx-watch": "tsx --env-file=.env --watch src/index.ts",
+		"tsx-watch": "tsx --env-file=.env --watch src/app.ts",
 		"start": "tsx --env-file=.env src/index.ts"
 	},
 	"devDependencies": {
