@@ -106,11 +106,35 @@ async function updateCourseInformation(req: Request, res: Response) {
 	try {
 		const courseId  = req?.params.courseId;
 
+
         if(!courseId) { 
             res.status(400).json(new ApiResponse(401, "courseId is required"));
             return;
         }
 
+
+        const body = req?.body 
+
+
+        const course = await client.course.findFirst({ 
+            where : { 
+                courseId : courseId as string
+            }
+        })
+
+
+        const update = await client.course.update({ 
+            where : { 
+                courseId: courseId as string
+            }, 
+            data : {
+                ...body
+            }
+
+        })
+
+        res.status(200 ).json(new ApiResponse(200, "Course details Updated"));
+        return
 
 
 	} catch (error) {
@@ -146,3 +170,17 @@ async function removeCourse(req: Request, res: Response) {
 		return;
 	}
 }
+
+
+
+const router = Router(); 
+
+router.route("/").get(getCourses).post(createCourse) 
+router.route("/:courseId")
+.get(getCourseInformation)
+.delete(removeCourse)
+.patch(updateCourseInformation)
+
+
+
+export default router; 
