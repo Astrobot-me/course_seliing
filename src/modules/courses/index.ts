@@ -2,6 +2,7 @@ import { type Request, type Response } from "express";
 import { Router } from "express";
 import { client } from "../../database.js";
 import { ApiResponse } from "../../standards/apiResponce.js";
+import { roleChecker } from "../../middlewares/roleMiddleware.js";
 
 /*
 
@@ -46,7 +47,7 @@ async function createCourse(req: Request, res: Response) {
 	}
 }
 
-async function getCourses(req: Request, res: Response) {
+export async function getCourses(req: Request, res: Response) {
 	try {
 	
 
@@ -175,11 +176,11 @@ async function removeCourse(req: Request, res: Response) {
 
 const router = Router(); 
 
-router.route("/").get(getCourses).post(createCourse) 
+router.route("/").post(roleChecker, createCourse) 
 router.route("/:courseId")
 .get(getCourseInformation)
-.delete(removeCourse)
-.patch(updateCourseInformation)
+.delete(roleChecker, removeCourse)
+.patch(roleChecker, updateCourseInformation)
 
 
 
